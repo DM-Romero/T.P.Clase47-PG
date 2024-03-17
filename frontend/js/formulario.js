@@ -1,19 +1,16 @@
 window.onload = async () => {
+    const URL_BASE = 'http://localhost:3031/api/'
     let query = new URLSearchParams(location.search)
 
     if (!query.has('id')) {
         alert('Necesito un ID')
         location.href = "http://127.0.0.1:5500/frontend/home.html"
     }
-
-
+    const id = query.get('id')
 
 
     try {
-
-        const id = query.get('id')
-
-        const response = await fetch('http://localhost:3031/api/movies/' + id)
+        const response = await fetch(`${URL_BASE}movies/${id}`)
         const result = await response.json()
         const {data, meta} = result;
 
@@ -33,7 +30,7 @@ window.onload = async () => {
         inputLength.setAttribute('value',data.length)
 
         const selectGenre = document.getElementById('genre')
-        const responseGenres = await fetch('http://localhost:3031/api/genres/')
+        const responseGenres = await fetch(`${URL_BASE}genres`)
         const resultGenres = await responseGenres.json()
 
         resultGenres.data.forEach(genre => {
@@ -48,23 +45,71 @@ window.onload = async () => {
             selectGenre.appendChild(option)
         });
 
-
-
-
-
     } catch (error) {
         console.log(error);
     }
 
 
+
     const form = document.querySelector('form')
     const btnAgregar = document.querySelector('#btn-agregar')
-
-    form.addEventListener('submit', (e)=>{
-        e.preventDefault()
-    })
+    const btnEnviar = document.querySelector('#btn-enviar')
 
     btnAgregar.addEventListener('click', () => {
-        alert('agregar nueva pelicula!!!')
+        for (let i = 0; i < form.elements.length; i++) {
+            form.elements[i].value = null
+        }
+        btnEnviar.textContent= "Guardar"
+        query.set('edit', false)
+
+
     })
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault()
+        const endpoint = query.get('edit') == "true" 
+        ? `${URL_BASE}movies/update/${id}` 
+        : `${URL_BASE}movies/create`
+        
+        try {
+
+
+            
+            const response = await fetch(endpoint, {
+                method: query.get('edit')== 'true' ? 'PUT' : 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: this.elements[1].value,
+                    rating: this.elements[2].value,
+                    awards: this.elements[3].value,
+                    release_date: this.elements[4].value,
+                    length: this.elements[5].value,
+                    genre_id: this.elements[6].value
+                })
+                
+            })
+            await response.json()
+
+            Swal.fire({
+                position: "top-middle",
+                icon: "success",
+                title: "Cambios guardados con exito",
+                showConfirmButton: false,
+                timer: 1200
+            })
+            setTimeout(() => {
+                location.href = "http://127.0.0.1:5500/home.html"
+            }, 1200);
+                
+
+        
+
+        } catch (error) {
+            console.log(error);
+        }
+    })
+
+
 }

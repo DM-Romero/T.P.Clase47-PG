@@ -66,6 +66,14 @@ p {
   border: 0;
   margin: 5px;
 }
+
+.botonVolver{
+  color: white;
+  background-color: blue;
+  padding: 10px;
+  border-radius: 10px;
+}
+
 .botonBorrar{
   color: white;
   background-image: linear-gradient(120deg, #BB2D3B 0%, #a6c1ee 100%);
@@ -87,6 +95,10 @@ p {
 input, select{
   width: 60%;
   height: 25px;
+}
+
+.favorite{
+  color: #BB2D3B;
 }
 
 @media screen and (min-width: 600px) {
