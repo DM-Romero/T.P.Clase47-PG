@@ -4,7 +4,7 @@ window.onload = async () => {
 
     if (!query.has('id')) {
         alert('Necesito un ID')
-        location.href = "http://127.0.0.1:5500/frontend/home.html"
+        location.href = "http://127.0.0.1:5500/home.html"
     }
     const id = query.get('id')
 
@@ -54,16 +54,51 @@ window.onload = async () => {
     const form = document.querySelector('form')
     const btnAgregar = document.querySelector('#btn-agregar')
     const btnEnviar = document.querySelector('#btn-enviar')
+    const btnEliminar = document.querySelector('#btn-eliminar')
+
+
 
     btnAgregar.addEventListener('click', () => {
         for (let i = 0; i < form.elements.length; i++) {
             form.elements[i].value = null
         }
+
         btnEnviar.textContent= "Guardar"
+        btnEliminar.style.display= "none"
+        btnAgregar.textContent= "Cancelar"
+        btnAgregar.onclick = () => location.href = "http://127.0.0.1:5500/home.html"
         query.set('edit', false)
-
-
     })
+
+
+
+    btnEliminar.addEventListener('click',async()=> {
+        try {
+            const response = await fetch(`${URL_BASE}movies/delete/${id}`,{
+                method: 'DELETE',
+            })
+            await response.json()
+
+            Swal.fire({
+                position: "top-middle",
+                icon: "success",
+                title: "Película eliminada con exito",
+                showConfirmButton: false,
+                timer: 1200
+            })
+            setTimeout(() => {
+                location.href = "http://127.0.0.1:5500/home.html"
+            }, 1200);
+                
+
+        
+
+        } catch (error) {
+            console.log(error);
+        }
+    })
+
+
 
     form.addEventListener('submit', async function (e) {
         e.preventDefault()
@@ -72,9 +107,6 @@ window.onload = async () => {
         : `${URL_BASE}movies/create`
         
         try {
-
-
-            
             const response = await fetch(endpoint, {
                 method: query.get('edit')== 'true' ? 'PUT' : 'POST',
                 headers: {
