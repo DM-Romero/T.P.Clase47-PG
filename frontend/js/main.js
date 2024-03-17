@@ -1,22 +1,25 @@
 sessionStorage.setItem('favorites22',JSON.stringify([]))
-const favorites = JSON.parse(sessionStorage.getItem('favorites22'))
+let favorites = JSON.parse(sessionStorage.getItem('favorites22'))
 
 const favoriteChange = (e,id) =>{
   e.target.classList.toggle('fa-solid')
   if (favorites.includes(id)) {
-    const favoritesUpdated = favorites.filter(f => f.id != id)
-    sessionStorage.setItem('favorites22',JSON.stringify(favoritesUpdated))
+    favorites = favorites.filter(f => f.id != id)
+    sessionStorage.setItem('favorites22',JSON.stringify(favorites))
   }else{
     favorites.push(id)
     sessionStorage.setItem('favorites22',JSON.stringify(favorites))
   }
 }
 
+
 window.onload = async () => {
   const app = document.getElementById("root");
   const container = document.createElement("div");
   container.setAttribute("class", "container");
   app.appendChild(container);
+
+
 
   // Aqui debemos agregar nuestro fetch
   try {
@@ -37,14 +40,17 @@ window.onload = async () => {
       const duracion = document.createElement("p");
       duracion.textContent = `Duración:${movie.length}`;
 
+
       container.appendChild(card);
       card.appendChild(h1);
       card.appendChild(p);
+
       if (movie.genre !== null) {
         const genero = document.createElement("p");
         genero.textContent = `Genero:${movie.genre.name}`;
         card.appendChild(genero);
       }
+
       card.appendChild(duracion);
       const link = document.createElement('a')
       link.textContent = "editar"
@@ -64,8 +70,4 @@ window.onload = async () => {
   } catch (error) {
     console.log(error);
   }
-
-
-
-
 };
