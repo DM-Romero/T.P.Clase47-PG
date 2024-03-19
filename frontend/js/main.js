@@ -1,10 +1,14 @@
-sessionStorage.setItem('favorites22',JSON.stringify([]))
-let favorites = JSON.parse(sessionStorage.getItem('favorites22'))
+
+let favorites = sessionStorage.getItem('favorites22') 
+? JSON.parse(sessionStorage.getItem('favorites22')) 
+: sessionStorage.setItem('favorites22', JSON.stringify([]))
 
 const favoriteChange = (e,id) =>{
   e.target.classList.toggle('fa-solid')
+  e.target.classList.toggle('fa-regular')
+
   if (favorites.includes(id)) {
-    favorites = favorites.filter(f => f.id != id)
+    favorites = favorites.filter(f => f != id)
     sessionStorage.setItem('favorites22',JSON.stringify(favorites))
   }else{
     favorites.push(id)
@@ -61,7 +65,7 @@ window.onload = async () => {
       const favoritelink = document.createElement('a')
       favoritelink.setAttribute('href', '#')
       favoritelink.setAttribute('class','favorite')
-      favoritelink.innerHTML = `<i class="fa-regular fa-heart"></i>`
+      favoritelink.innerHTML = `<i class="${favorites.includes(movie.id) ? 'fa-solid' : 'fa-regular'} fa-heart"></i>`
       favoritelink.setAttribute('onClick', `favoriteChange(event,${movie.id})`)
 
       card.appendChild(favoritelink)
